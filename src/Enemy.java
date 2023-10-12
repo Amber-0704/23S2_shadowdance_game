@@ -8,9 +8,8 @@ public class Enemy extends Entity{
     // Position
     private final static int X_MAX_RANGE = 900;
     private final static int X_MIN_RANGE = 100;
-
     // Image
-    private final static Image ENEMY_IMAGE = new Image("res/Enemy.png");
+    private final static String ENEMY_IMAGE = "res/Enemy.png";
     // Speed
     private int speed = 1;
 
@@ -19,7 +18,7 @@ public class Enemy extends Entity{
      * @param yAxis Enemy's initial x position
      */
     public Enemy(int xAxis, int yAxis){
-        super(ENEMY_IMAGE, xAxis, yAxis);
+        super(new Image(ENEMY_IMAGE), xAxis, yAxis);
     }
 
     /** Method use to update enemy
@@ -27,13 +26,15 @@ public class Enemy extends Entity{
     public void update(){
         draw();
         setXAxis(getXAxis() + speed);
-        // Enemy 碰到边缘的时候需要换方向
+        // If enemy attack
         if(getXAxis() >= X_MAX_RANGE || getXAxis() <= X_MIN_RANGE){
             directionChange();
         }
     }
 
-    private void directionChange(){  //当x的超出范围时，改变速度，相当于就是改变方向
+    /** Method use to change the direction of enemy
+     */
+    private void directionChange(){
         if(speed == 1){
             speed = -1;
         } else {

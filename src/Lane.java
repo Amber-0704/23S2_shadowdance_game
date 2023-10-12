@@ -9,42 +9,56 @@ public class Lane extends Entity{
     private static final int HEIGHT = 384;
     private static final int TARGET_HEIGHT = 657;
     private static final int COLLISION_DISTANCE = 104;
+    private static final String LEFT = "Left";
+    private static final String RIGHT = "Right";
+    private static final String UP = "Up";
+    private static final String DOWN = "Down";
+    private static final String SPECIAL = "Special";
     private final String type;
     private Keys relevantKey;
     private final ArrayList<Note> notes = new ArrayList<>();
 
-    // 这里就是shadowDance里面存入lane的方向和位置
+    /** The constructor of Lane
+     * @param dir Input the direction of lane
+     * @param location The location of lane
+     */
     public Lane(String dir, int location) {
-
         super(new Image("res/lane" + dir + ".png"), location, HEIGHT);
         this.type = dir;
-
-        //在这里目前只存在4个正常的lane，后续会需要加入specialLane
         switch (dir) {
-            case "Left":
+            case LEFT:
                 relevantKey = Keys.LEFT;
                 break;
-            case "Right":
+            case RIGHT:
                 relevantKey = Keys.RIGHT;
                 break;
-            case "Up":
+            case UP:
                 relevantKey = Keys.UP;
                 break;
-            case "Down":
+            case DOWN:
                 relevantKey = Keys.DOWN;
                 break;
-            case "Special":
+            case SPECIAL:
                 relevantKey = Keys.SPACE;
                 break;
         }
     }
-    // 用于得到lane的type
+
+    /** The method use to getType
+     * @return Type
+     */
     public String getType() {
         return type;
     }
 
+    /** The method use to update Lane and note
+     * @param input This is used to receive keystroke arguments
+     * @param accuracy The Accuracy of note
+     * @return Score
+     */
     public int update(Input input, Accuracy accuracy) {
         draw();
+        // Update note
         for(Note subNote: notes){
             subNote.update();
         }
@@ -53,9 +67,8 @@ public class Lane extends Entity{
             if (notes.get(0).isCompleted()){
                 notes.remove(notes.get(0));
             }
-            // 处理bomb的情况
-            if (score == Accuracy.CLEAR_ALL){ // 代表被hit中了
-                /**消除abstractNote中active的note，做一个while loop把所有的active的note remove掉*/
+            // Handle the situation where the Note touches a Bomb Note
+            if (score == Accuracy.CLEAR_ALL){
                 for(Note subNote: notes){
                     if(subNote.isActive()){
                         subNote.deactivate();
@@ -68,17 +81,21 @@ public class Lane extends Entity{
         return Accuracy.NOT_SCORED;
     }
 
-    // 在这里HoldNote和NormalNote都属于Note，所以他们俩个共用一个method就可以了
-    public void addNote(Note n) {
-        notes.add(n);
+    /** The method use to add note into List of Note
+     * @param note The note need add to List of Note
+     */
+    public void addNote(Note note) {
+        notes.add(note);
     }
 
+    /** The method use to check that every note is finish
+     * @return true/flase
+     */
     public boolean isFinished() {
         return notes.isEmpty();
     }
 
-    /**
-     * draws the lane and the notes
+    /** The method used to draw the lane and the notes
      */
     public void draw() {
         super.draw();
@@ -86,17 +103,17 @@ public class Lane extends Entity{
             subNote.draw();
         }
     }
-    /**加一个method 用于checkCollision，用于检查Enemy是否于Note产生碰撞 //loop每个Note，检查是否碰撞
+
+    /** The method use to check collision of note and enemy
+     * @param enemy Input the enemy
      */
     public void checkCollision(Enemy enemy){
         for(Note subNote: notes){
-
             if(subNote.isActive()) {
                 double xDiff = subNote.getXAxis() - enemy.getXAxis();
                 double yDiff = subNote.getYAxis() - enemy.getYAxis();
                 double distanceEnemyNote = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                if(distanceEnemyNote < COLLISION_DISTANCE &&
-                        (subNote instanceof HoldNote || subNote instanceof NormalNote)){
+                if(distanceEnemyNote <= COLLISION_DISTANCE && subNote instanceof NormalNote){
                     subNote.deactivate();
                 }
             }

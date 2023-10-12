@@ -6,12 +6,14 @@ import bagel.Keys;
  */
 public class DoubleScoreNote extends Note{
     private final static int Y_START_AXIS = 100;
+    private final static String DOUBLE_IMAGE = "res/note2x.png";
+
     /** The method use to initial Double Score Note
      * @param dir Which lane Double Score Note Appear
      * @param appearanceFrame Which Frame Double Score Note Appear
      */
     public DoubleScoreNote(String dir, int appearanceFrame, double x){
-        super(appearanceFrame, new Image("res/note2x.png"),x, Y_START_AXIS );
+        super(appearanceFrame, new Image(DOUBLE_IMAGE),x, Y_START_AXIS );
     }
 
     /** Method use to check score

@@ -5,7 +5,9 @@ import bagel.Keys;
 
 import java.util.ArrayList;
 
-public class Projectile { //弓箭， 最好把Projectile放到Guardian里面
+/** The Class of Projectile
+ */
+public class Projectile {
     private final static int Y_AXIS = 600;
     private final static int X_AXIS = 800;
     private final static int SPEED = 6;
@@ -13,32 +15,43 @@ public class Projectile { //弓箭， 最好把Projectile放到Guardian里面
     private int y = Y_AXIS;
     private double rotateAngle;
     private final Image PROJECTILE_IMAGE = new Image("res/arrow.png");
-    private DrawOptions options = new DrawOptions(); //Bagel库里面的用法
+    private DrawOptions options = new DrawOptions();
 
-
+    /** The constructor of Projectile
+     * @param enemy The enemy which is closest to Guardian
+     */
     public Projectile(Enemy enemy){
-        // 这个里面给定的可以是一个Enemy。也可以是一个Enemy的坐标
         double xDifferent = enemy.getXAxis()-X_AXIS;
         double yDifferent = enemy.getYAxis()-Y_AXIS;
         rotateAngle = Math.atan2(yDifferent, xDifferent);
-        // 画出来之后在guardian的update里面去看collision
         options.setRotation(rotateAngle);
 
     }
+
+    /** The method use to update Projectile
+     */
     public void update(){
         draw();
         x += SPEED * Math.cos(rotateAngle);
         y += SPEED * Math.sin(rotateAngle);
     }
 
+    /** The method use to draw Projectile
+     */
     public void draw(){
         PROJECTILE_IMAGE.draw(x, y, options);//用来画projectile的图片，options是图片的朝向
     }
 
+    /** The method use to get X
+     * @return XAxis
+     */
     public int getX() {
         return x;
     }
 
+    /** The method use to get Y
+     * @return YAxis
+     */
     public int getY() {
         return y;
     }

@@ -191,7 +191,7 @@ public class  ShadowDance extends AbstractGame  {
         // While the game is in progress
         } else {
             SCORE_FONT.drawString("Score " + score, SCORE_LOCATION, SCORE_LOCATION);
-            // Game start
+            // Game pause
             if (paused) {
                 if (input.wasPressed(Keys.TAB)) {
                     paused = false;
@@ -207,7 +207,7 @@ public class  ShadowDance extends AbstractGame  {
                     score += subLane.update(input, accuracy);
                 }
                 // Level3 Game Note
-                if (level == 3){
+                if (level == LEVEL_THREE){
                     // Draw Guardian
                     guardian.draw();
                     // Create Enemy

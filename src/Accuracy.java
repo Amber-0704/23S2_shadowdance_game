@@ -61,7 +61,8 @@ public class Accuracy {
      * @param note Give the current Note
      * @return Score the Note get
      */
-    public int evaluateSpecialScore(double height, double targetHeight, boolean triggered, String specialMessage, Note note){
+    public int evaluateSpecialScore(double height, double targetHeight, boolean triggered,
+                                    String specialMessage, Note note){
         double distance = Math.abs(height - targetHeight);
         // SpecialNote is touched
         if (triggered) {

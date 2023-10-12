@@ -1,13 +1,15 @@
 import javax.sound.sampled.*;
 
-/**
- * 老师给的代码，用来控制音乐
+/** The class use to control music
  */
 
 public class Track extends Thread {
     private AudioInputStream stream;
     private Clip clip;
 
+    /** The method use to read file
+     * @param file The music need to play
+     */
     public Track(String file) {
         try {
             stream = AudioSystem.getAudioInputStream(new java.io.File(file));
@@ -18,6 +20,8 @@ public class Track extends Thread {
         }
     }
 
+    /** The method use to stop music
+     */
     public void pause() {
         try {
             clip.stop();
@@ -26,6 +30,8 @@ public class Track extends Thread {
         }
     }
 
+    /** The method use to play music
+     */
     public void run(){
         try {
             clip.start();
