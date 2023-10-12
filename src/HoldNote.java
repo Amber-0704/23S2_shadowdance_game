@@ -8,9 +8,8 @@ public class HoldNote extends Note {
     private static final int HEIGHT_OFFSET = 82;
     private final static int Y_START_AXIS = 24;
     private boolean holdStarted = false;
-    public HoldNote(String dir, int appearanceFrame) {
-        super(appearanceFrame, new Image("res/HoldNote" + dir + ".png"), Y_START_AXIS );
-
+    public HoldNote(String dir, int appearanceFrame, double x) {
+        super(appearanceFrame, new Image("res/HoldNote" + dir + ".png"),x, Y_START_AXIS );
     }
 
 
@@ -53,14 +52,14 @@ public class HoldNote extends Note {
     /**
      * gets the location of the start of the note
      */
-    private int getBottomHeight() {
-        return getY() + HEIGHT_OFFSET;
+    private double getBottomHeight() {
+        return getYAxis() + HEIGHT_OFFSET;
     }
 
     /**
      * gets the location of the end of the note
      */
-    private int getTopHeight() {
-        return getY() - HEIGHT_OFFSET;
+    private double getTopHeight() {
+        return getYAxis() - HEIGHT_OFFSET;
     }
 }

@@ -2,29 +2,37 @@ import bagel.Image;
 
 import java.util.Random;
 
-public class Enemy {
+/** The class of Enemy
+ */
+public class Enemy extends Entity{
+    // Position
     private final static int X_MAX_RANGE = 900;
     private final static int X_MIN_RANGE = 100;
-    private final Image ENEMY_IMAGE = new Image("res/Enemy.png");
-    private final Random randomDirection = new Random();
-    private int speed = 1; // Enemy移动的速度
-    private int xAxis;
-    private int yAxis;
 
-    // constructor
+    // Image
+    private final static Image ENEMY_IMAGE = new Image("res/Enemy.png");
+    // Speed
+    private int speed = 1;
+
+    /** Constructor use to initialize Enemy
+     * @param xAxis Enemy's initial x position
+     * @param yAxis Enemy's initial x position
+     */
     public Enemy(int xAxis, int yAxis){
-        this.xAxis = xAxis;
-        this.yAxis = yAxis;
+        super(ENEMY_IMAGE, xAxis, yAxis);
     }
-    // 一个update的function
+
+    /** Method use to update enemy
+     */
     public void update(){
         draw();
-        xAxis += speed;
+        setXAxis(getXAxis() + speed);
         // Enemy 碰到边缘的时候需要换方向
-        if(xAxis >= X_MAX_RANGE || xAxis <= X_MIN_RANGE){
+        if(getXAxis() >= X_MAX_RANGE || getXAxis() <= X_MIN_RANGE){
             directionChange();
         }
     }
+
     private void directionChange(){  //当x的超出范围时，改变速度，相当于就是改变方向
         if(speed == 1){
             speed = -1;
@@ -33,15 +41,4 @@ public class Enemy {
         }
     }
 
-    public void draw(){
-        ENEMY_IMAGE.draw(xAxis, yAxis);
-    }
-
-    public int getXAxis() {
-        return xAxis;
-    }
-
-    public int getYAxis() {
-        return yAxis;
-    }
 }

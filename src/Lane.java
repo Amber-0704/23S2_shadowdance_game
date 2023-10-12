@@ -5,21 +5,20 @@ import java.util.ArrayList;
 /**
  * Class for the lanes which notes fall down
  */
-public class Lane {
+public class Lane extends Entity{
     private static final int HEIGHT = 384;
     private static final int TARGET_HEIGHT = 657;
     private static final int COLLISION_DISTANCE = 104;
     private final String type;
-    private final Image image;
     private Keys relevantKey;
-    private final int location;
     private final ArrayList<Note> notes = new ArrayList<>();
 
     // 这里就是shadowDance里面存入lane的方向和位置
     public Lane(String dir, int location) {
+
+        super(new Image("res/lane" + dir + ".png"), location, HEIGHT);
         this.type = dir;
-        this.location = location;
-        image = new Image("res/lane" + dir + ".png");
+
         //在这里目前只存在4个正常的lane，后续会需要加入specialLane
         switch (dir) {
             case "Left":
@@ -82,20 +81,24 @@ public class Lane {
      * draws the lane and the notes
      */
     public void draw() {
-        image.draw(location, HEIGHT);
+        super.draw();
         for(Note subNote: notes){
-            subNote.draw(location);
+            subNote.draw();
         }
     }
     /**加一个method 用于checkCollision，用于检查Enemy是否于Note产生碰撞 //loop每个Note，检查是否碰撞
      */
     public void checkCollision(Enemy enemy){
         for(Note subNote: notes){
-            int xDiff = subNote.getX() - enemy.getXAxis();
-            int yDiff = subNote.getY() - enemy.getYAxis();
-            double distanceEnemyNote = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-            if(distanceEnemyNote < COLLISION_DISTANCE&& (subNote instanceof HoldNote || subNote instanceof NormalNote)){
-                subNote.deactivate();
+
+            if(subNote.isActive()) {
+                double xDiff = subNote.getXAxis() - enemy.getXAxis();
+                double yDiff = subNote.getYAxis() - enemy.getYAxis();
+                double distanceEnemyNote = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+                if(distanceEnemyNote < COLLISION_DISTANCE &&
+                        (subNote instanceof HoldNote || subNote instanceof NormalNote)){
+                    subNote.deactivate();
+                }
             }
         }
 

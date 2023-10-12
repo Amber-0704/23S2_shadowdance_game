@@ -16,12 +16,15 @@ public class  ShadowDance extends AbstractGame  {
     private final static int LEVEL_THREE = 3;
     private int level= -1;
     private final static String CSV_FILE_ONE = "res/level1.csv";
-    private final static String CSV_FILE_TWO = "res/test2.csv";
+    private final static String CSV_FILE_TWO = "res/level2.csv";
     private final static String CSV_FILE_THREE = "res/level3.csv";
     private Track track;
     private static final int CLEAR_SCORE_ONE = 150;
     private static final int CLEAR_SCORE_TWO= 450;
     private static final int CLEAR_SCORE_THREE= 300;
+    private final static String TRACK_ONE = "res/track1.wav";
+    private final static String TRACK_TWO = "res/track2.wav";
+    private final static String TRACK_THREE = "res/track3.wav";
 
     //Window
     private final static int WINDOW_WIDTH = 1024;
@@ -48,7 +51,7 @@ public class  ShadowDance extends AbstractGame  {
     private static final String SELECTION_MESSAGE = "PRESS SPACE TO RETURN TO LEVEL SELECTION";
 
     // Note Type
-    private final static String NORMAL_NOTE = "Note";
+    private final static String NORMAL_NOTE = "Normal";
     private final static String HOLD_NOTE = "Hold";
     private final static String BOMB_NOTE = "Bomb";
     private final static String SPEED_UP_NOTE = "SpeedUp";
@@ -61,7 +64,7 @@ public class  ShadowDance extends AbstractGame  {
     private static final int ENEMY_MAX_X = 900;
     private static final int ENEMY_MIN_Y = 100;
     private static final int ENEMY_MAX_Y = 500;
-    private static final int ENEMY_CREAT_FRAME = 600;
+    private static final int ENEMY_CREATE_FRAME = 600;
 
     //Record Information
     private Accuracy accuracy;
@@ -121,29 +124,31 @@ public class  ShadowDance extends AbstractGame  {
                     }
                     // Add NormalNote and Hold to this lane
                     if (lane != null) {
+
+                        double x = lane.getXAxis();
                         switch (splitText[1]) {
                             case NORMAL_NOTE:
-                                NormalNote normalNote = new NormalNote(dir, Integer.parseInt(splitText[2]));
+                                NormalNote normalNote = new NormalNote(dir, Integer.parseInt(splitText[2]), x);
                                 lane.addNote(normalNote);
                                 break;
                             case HOLD_NOTE:
-                                HoldNote holdNote = new HoldNote(dir, Integer.parseInt(splitText[2]));
+                                HoldNote holdNote = new HoldNote(dir, Integer.parseInt(splitText[2]), x);
                                 lane.addNote(holdNote);
                                 break;
                             case BOMB_NOTE:
-                                BombNote bombNote = new BombNote(dir, Integer.parseInt(splitText[2]));
+                                BombNote bombNote = new BombNote(dir, Integer.parseInt(splitText[2]), x);
                                 lane.addNote(bombNote);
                                 break;
                             case DOUBLE_SCORE_NOTE:
-                                DoubleScoreNote doubleScoreNote = new DoubleScoreNote(dir, Integer.parseInt(splitText[2]));
+                                DoubleScoreNote doubleScoreNote = new DoubleScoreNote(dir, Integer.parseInt(splitText[2]), x);
                                 lane.addNote(doubleScoreNote);
                                 break;
                             case SLOW_DOWN_NOTE:
-                                SlowDownNote slowDownNote = new SlowDownNote(dir, Integer.parseInt(splitText[2]));
+                                SlowDownNote slowDownNote = new SlowDownNote(dir, Integer.parseInt(splitText[2]), x);
                                 lane.addNote(slowDownNote);
                                 break;
                             case SPEED_UP_NOTE:
-                                SpeedUpNote speedUpNote = new SpeedUpNote(dir, Integer.parseInt(splitText[2]));
+                                SpeedUpNote speedUpNote = new SpeedUpNote(dir, Integer.parseInt(splitText[2]), x);
                                 lane.addNote(speedUpNote);
                                 break;
 
@@ -166,63 +171,22 @@ public class  ShadowDance extends AbstractGame  {
         if (input.wasPressed(Keys.ESCAPE)){
             Window.close();
         }
-
         // The game page
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
-
         // Game play
         // starting screen
         if (!started) {
             TITLE_FONT.drawString(GAME_TITLE, TITLE_X, TITLE_Y);
             INSTRUCTION_FONT.drawString(INSTRUCTIONS,
                     TITLE_X + INS_X_OFFSET, TITLE_Y + INS_Y_OFFSET);
-            // Read Level one information
-            if (input.wasPressed(Keys.NUM_1)) {
-                readCsv(CSV_FILE_ONE);
-                level= LEVEL_ONE;
-                started = true;
-                track= new Track("res/track1.wav");
-                clearScore = CLEAR_SCORE_ONE;
-                track.start();
-            // Read level two information
-            }else if(input.wasPressed(Keys.NUM_2)) {
-                readCsv(CSV_FILE_TWO);
-                level= LEVEL_TWO;
-                started = true;
-                track= new Track("res/track2.wav");
-                clearScore = CLEAR_SCORE_TWO;
-                track.start();
-            // Read level three information
-            }else if(input.wasPressed(Keys.NUM_3)) {
-                readCsv(CSV_FILE_THREE);
-                level= LEVEL_THREE;
-                started = true;
-                track= new Track("res/track3.wav");
-                clearScore = CLEAR_SCORE_THREE;
-                track.start();
-            }
+            // Read information from different level
+            chooseGameLevel(input);
         // Game over, print Game over page
         } else if (finished) {
             if (score >= clearScore) {
-                TITLE_FONT.drawString(CLEAR_MESSAGE,
-                        WINDOW_WIDTH/2 - TITLE_FONT.getWidth(CLEAR_MESSAGE)/2,
-                        WIN_Y_AXIS);
-                INSTRUCTION_FONT.drawString(SELECTION_MESSAGE,
-                        WINDOW_WIDTH/2 - INSTRUCTION_FONT.getWidth(SELECTION_MESSAGE)/2,
-                        SELECTION_Y_AXIS);
-                if(input.wasPressed(Keys.SPACE)){
-                    started = false;
-                }
+                printEndPage(CLEAR_MESSAGE,input);
             } else {
-                TITLE_FONT.drawString(TRY_AGAIN_MESSAGE,
-                        WINDOW_WIDTH / 2 - TITLE_FONT.getWidth(TRY_AGAIN_MESSAGE) / 2,
-                        WIN_Y_AXIS);
-                INSTRUCTION_FONT.drawString(SELECTION_MESSAGE,
-                        WINDOW_WIDTH/2 - INSTRUCTION_FONT.getWidth(SELECTION_MESSAGE)/2,
-                        SELECTION_Y_AXIS);
-                if(input.wasPressed(Keys.SPACE)){
-                    started = false;
-                }
+                printEndPage(TRY_AGAIN_MESSAGE,input);
             }
         // While the game is in progress
         } else {
@@ -246,13 +210,8 @@ public class  ShadowDance extends AbstractGame  {
                 if (level == 3){
                     // Draw Guardian
                     guardian.draw();
-                    // Deal with the Enemy
-                    if(currFrame % ENEMY_CREAT_FRAME == 1 && currFrame > ENEMY_CREAT_FRAME){
-                        int enemyX = randomAppear.nextInt(ENEMY_MIN_X + 1 ) + (ENEMY_MAX_X - ENEMY_MIN_X);
-                        int enemyY = randomAppear.nextInt(ENEMY_MIN_Y + 1 ) + (ENEMY_MAX_Y - ENEMY_MIN_Y);
-                        Enemy enemy = new Enemy (enemyX, enemyY);
-                        enemies.add(enemy);
-                    }
+                    // Create Enemy
+                    createEnemy(currFrame);
                     // Update enemy, and check if the monster and note collide
                     for(Enemy subEnemy: enemies){
                         subEnemy.update();
@@ -272,7 +231,6 @@ public class  ShadowDance extends AbstractGame  {
                 }
             }
         }
-
     }
 
     /** Gets the number of frames that are currently running
@@ -294,4 +252,68 @@ public class  ShadowDance extends AbstractGame  {
         }
         return true;
     }
+
+    /** Method use to create Enemy
+     * @param currFrame The number of frames up to now
+     */
+    private void createEnemy(int currFrame){
+        if(ShadowDance.currFrame % ENEMY_CREATE_FRAME == 1 && ShadowDance.currFrame > ENEMY_CREATE_FRAME){
+            int enemyX = randomAppear.nextInt(ENEMY_MAX_X - ENEMY_MIN_X + 1) + ENEMY_MIN_X;
+            int enemyY = randomAppear.nextInt(ENEMY_MAX_Y - ENEMY_MIN_Y + 1) + ENEMY_MIN_Y;
+            Enemy enemy = new Enemy (enemyX, enemyY);
+            enemies.add(enemy);
+        }
+    }
+
+    /** Method use to Choose the level we want to play
+     * @param input This is used to receive keystroke arguments
+     */
+    private void chooseGameLevel(Input input){
+        if (input.wasPressed(Keys.NUM_1)) {
+            readCsv(CSV_FILE_ONE);
+            Note.setSpeedChange(0);
+            level= LEVEL_ONE;
+            started = true;
+            track= new Track(TRACK_ONE);
+            clearScore = CLEAR_SCORE_ONE;
+            track.start();
+            // Read level two information
+        }else if(input.wasPressed(Keys.NUM_2)) {
+            readCsv(CSV_FILE_TWO);
+            Note.setSpeedChange(0);
+            level= LEVEL_TWO;
+            started = true;
+            track= new Track(TRACK_TWO);
+            clearScore = CLEAR_SCORE_TWO;
+            track.start();
+            // Read level three information
+        }else if(input.wasPressed(Keys.NUM_3)) {
+            readCsv(CSV_FILE_THREE);
+            Note.setSpeedChange(0);
+            level= LEVEL_THREE;
+            started = true;
+            track= new Track(TRACK_THREE);
+            clearScore = CLEAR_SCORE_THREE;
+            track.start();
+        }
+    }
+
+    /** The method use to print end page
+     * @param message the message need to print
+     * @param input  This is used to receive keystroke arguments
+     */
+    private void printEndPage(String message,Input input){
+        TITLE_FONT.drawString(message,
+                WINDOW_WIDTH/2 - TITLE_FONT.getWidth(message)/2,
+                WIN_Y_AXIS);
+        INSTRUCTION_FONT.drawString(SELECTION_MESSAGE,
+                WINDOW_WIDTH/2 - INSTRUCTION_FONT.getWidth(SELECTION_MESSAGE)/2,
+                SELECTION_Y_AXIS);
+        if(input.wasPressed(Keys.SPACE)) {
+            started = false;
+        }
+    }
+
+
+
 }

@@ -2,26 +2,17 @@ import bagel.Image;
 import bagel.Input;
 import bagel.Keys;
 
-public abstract class Note {
-    private final Image image;
+public abstract class Note extends Entity{
     private final int appearanceFrame;
     private final int SPEED = 2;
     public static int speedChange = 0;
-    private int y ;
-    private int x ;
     private boolean active = false;
     private boolean completed = false;
 
 
-    public Note( int appearanceFrame, Image image, int y) {
-        this.image = image;
+    public Note( int appearanceFrame, Image image, double x,double y) {
+        super(image, x, y);
         this.appearanceFrame = appearanceFrame;
-        this.y =  y;
-    }
-
-    //添加了一个新的getY method，用于在继承他的class里面使用
-    public int getY() {
-        return y;
     }
 
 
@@ -38,7 +29,8 @@ public abstract class Note {
 
     public void update() {
         if (active) {
-            y += SPEED + speedChange; //在这里面加一个speedChange,方便后面的special_note控制速度
+            setYAxis(getYAxis() + SPEED + speedChange);
+         //在这里面加一个speedChange,方便后面的special_note控制速度
         }
 
         if (ShadowDance.getCurrFrame() >= appearanceFrame && !completed) {
@@ -46,17 +38,16 @@ public abstract class Note {
         }
     }
 
-    public void draw(int x) {
-        this.x = x;
+    public void draw() {
         if (active) {
-            image.draw(x, y);
+            super.draw();
         }
-    }
-
-    public int getX() {
-        return x;
     }
 
     //因为每个class的记分板都不一样，所以都需要重写，改成abstract就可以了
     public abstract int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKe, Note note);
+
+    public static void setSpeedChange(int speedChange) {
+        Note.speedChange = speedChange;
+    }
 }
