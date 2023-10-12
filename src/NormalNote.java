@@ -11,7 +11,7 @@ public class NormalNote extends Note {
         super(appearanceFrame, new Image("res/Note" + dir + ".png"), Y_START_AXIS );
     }
 
-    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey) {
+    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey, Note note) {
         if (isActive()) {
             int score = accuracy.evaluateNormalScore(getY(), targetHeight, input.wasPressed(relevantKey));
             if (score != Accuracy.NOT_SCORED) {

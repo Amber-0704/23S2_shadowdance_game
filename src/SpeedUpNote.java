@@ -8,9 +8,9 @@ public class SpeedUpNote extends Note{
         super(appearanceFrame, new Image("res/noteSpeedUp.png"), Y_START_AXIS );
 
     }
-    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey) {
+    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey,Note note) {
         int score = accuracy.evaluateSpecialScore(getY(), targetHeight, input.wasPressed(relevantKey),
-                Accuracy.SPEED_UP);
+                Accuracy.SPEED_UP, note);
         if (score != Accuracy.NOT_SCORED) {
             //全部的note速度+1
             Note.speedChange = 1; // Note.speedChange += 1

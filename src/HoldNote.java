@@ -22,7 +22,7 @@ public class HoldNote extends Note {
     /**
      * scored twice, once at the start of the hold and once at the end
      */
-    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey) {
+    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey, Note note) {
         if (isActive() && !holdStarted) {
             int score = accuracy.evaluateNormalScore(getBottomHeight(), targetHeight, input.wasPressed(relevantKey));
 

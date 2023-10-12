@@ -8,9 +8,9 @@ public class BombNote extends Note{
         super(appearanceFrame, new Image("res/noteBomb.png"), Y_START_AXIS);
 
     }
-    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey) {
+    public int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKey, Note note) {
         int score = accuracy.evaluateSpecialScore(getY(), targetHeight, input.wasPressed(relevantKey),
-                Accuracy.LANE_CLEAR);
+                Accuracy.LANE_CLEAR, note);
         if (score == Accuracy.SPECIAL_SCORE) {
             // bomb消失
             deactivate();
@@ -18,4 +18,5 @@ public class BombNote extends Note{
         }
         return Accuracy.NOT_SCORED;
     }
+
 }

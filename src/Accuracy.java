@@ -28,14 +28,24 @@ public class Accuracy {
     private static final Font ACCURACY_FONT = new Font(ShadowDance.FONT_FILE, 40);
     private static final int RENDER_FRAMES = 30;
     private String currAccuracy = null;
+    public static int scoreChange = 1;
     private int frameCount = 0;
+    private int doubleFrameCount = 0;
+    private static final int DOUBLE_FRAME = 480;
+
 
     public void setAccuracy(String accuracy) {
         currAccuracy = accuracy;
         frameCount = 0;
     }
+
+    public void doubleActive(){
+        doubleFrameCount = 0;
+        scoreChange *= 2;
+    }
+
     // 用于计算specialNote和symbol之间的距离，且判分
-    public int evaluateSpecialScore(int height, int targetHeight, boolean triggered, String specialMessage){
+    public int evaluateSpecialScore(int height, int targetHeight, boolean triggered, String specialMessage, Note note){
         int distance = Math.abs(height - targetHeight);
         //不仅需要判断是否触动，同是也要判断输入进来的是哪种specialNote
         if (triggered) { // triggered触动
@@ -43,9 +53,12 @@ public class Accuracy {
                 setAccuracy(specialMessage);
                 return SPECIAL_SCORE;
             }
+        } else if (height >= (Window.getHeight())) {
+            note.deactivate();
         }
         return NOT_SCORED;
     }
+
     // 用于计算HoldNote和NormalNote之间的距离，且判分
     public int evaluateNormalScore(int height, int targetHeight, boolean triggered) {
         int distance = Math.abs(height - targetHeight);
@@ -53,16 +66,16 @@ public class Accuracy {
         if (triggered) {
             if (distance <= PERFECT_RADIUS) {
                 setAccuracy(PERFECT);
-                return PERFECT_SCORE;
+                return PERFECT_SCORE * scoreChange;
             } else if (distance <= GOOD_RADIUS) {
                 setAccuracy(GOOD);
-                return GOOD_SCORE;
+                return GOOD_SCORE * scoreChange;
             } else if (distance <= BAD_RADIUS) {
                 setAccuracy(BAD);
-                return BAD_SCORE;
+                return BAD_SCORE * scoreChange;
             } else if (distance <= MISS_RADIUS) {
                 setAccuracy(MISS);
-                return MISS_SCORE;
+                return MISS_SCORE * scoreChange;
             }
 
         } else if (height >= (Window.getHeight())) {
@@ -75,11 +88,17 @@ public class Accuracy {
     }
 
     public void update() {
+        if(doubleFrameCount < DOUBLE_FRAME){
+            doubleFrameCount ++;
+            if(doubleFrameCount == DOUBLE_FRAME){
+                scoreChange = 1;
+            }
+        }
         frameCount++;
         if (currAccuracy != null && frameCount < RENDER_FRAMES) {
             ACCURACY_FONT.drawString(currAccuracy,
-                    Window.getWidth()/2 - ACCURACY_FONT.getWidth(currAccuracy)/2,
-                    Window.getHeight()/2);
+                    Window.getWidth() / 2 - ACCURACY_FONT.getWidth(currAccuracy) / 2,
+                    Window.getHeight() / 2);
         }
     }
 }

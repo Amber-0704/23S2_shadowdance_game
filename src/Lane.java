@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Lane {
     private static final int HEIGHT = 384;
     private static final int TARGET_HEIGHT = 657;
+    private static final int COLLISION_DISTANCE = 104;
     private final String type;
     private final Image image;
     private Keys relevantKey;
@@ -49,7 +50,7 @@ public class Lane {
             subNote.update();
         }
         if(!notes.isEmpty()){
-            int score = notes.get(0).checkScore(input, accuracy, TARGET_HEIGHT,relevantKey );
+            int score = notes.get(0).checkScore(input, accuracy, TARGET_HEIGHT,relevantKey ,notes.get(0));
             if (notes.get(0).isCompleted()){
                 notes.remove(notes.get(0));
             }
@@ -89,9 +90,15 @@ public class Lane {
     /**加一个method 用于checkCollision，用于检查Enemy是否于Note产生碰撞 //loop每个Note，检查是否碰撞
      */
     public void checkCollision(Enemy enemy){
-        //可以在Note里面再添加一个collision
-        //如果产生碰撞，并且当前的note是normalNote或者holdNote，就把他们remove
-        // Collition的范围是104，只要小于104就要remove
+        for(Note subNote: notes){
+            int xDiff = subNote.getX() - enemy.getXAxis();
+            int yDiff = subNote.getY() - enemy.getYAxis();
+            double distanceEnemyNote = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            if(distanceEnemyNote < COLLISION_DISTANCE&& (subNote instanceof HoldNote || subNote instanceof NormalNote)){
+                subNote.deactivate();
+            }
+        }
+
     }
 
 }

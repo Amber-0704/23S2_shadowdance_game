@@ -5,9 +5,10 @@ import bagel.Keys;
 public abstract class Note {
     private final Image image;
     private final int appearanceFrame;
-    private final int speed = 2;
+    private final int SPEED = 2;
     public static int speedChange = 0;
     private int y ;
+    private int x ;
     private boolean active = false;
     private boolean completed = false;
 
@@ -37,7 +38,7 @@ public abstract class Note {
 
     public void update() {
         if (active) {
-            y += speed + speedChange; //在这里面加一个speedChange,方便后面的special_note控制速度
+            y += SPEED + speedChange; //在这里面加一个speedChange,方便后面的special_note控制速度
         }
 
         if (ShadowDance.getCurrFrame() >= appearanceFrame && !completed) {
@@ -46,10 +47,16 @@ public abstract class Note {
     }
 
     public void draw(int x) {
+        this.x = x;
         if (active) {
             image.draw(x, y);
         }
     }
+
+    public int getX() {
+        return x;
+    }
+
     //因为每个class的记分板都不一样，所以都需要重写，改成abstract就可以了
-    public abstract int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKe);
+    public abstract int checkScore(Input input, Accuracy accuracy, int targetHeight, Keys relevantKe, Note note);
 }

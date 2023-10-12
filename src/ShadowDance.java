@@ -18,7 +18,7 @@ public class  ShadowDance extends AbstractGame  {
     private final Image BACKGROUND_IMAGE = new Image("res/background.png");
     private final Image GUARDIAN_IMAGE = new Image("res/guardian.png");
     private final static String CSV_FILE_ONE = "res/level1.csv";
-    private final static String CSV_FILE_TWO = "res/level2.csv";
+    private final static String CSV_FILE_TWO = "res/test2.csv";
     private final static String CSV_FILE_THREE = "res/level3.csv";
     private Track track;
     public final static String FONT_FILE = "res/FSO8BITR.TTF";
@@ -37,6 +37,11 @@ public class  ShadowDance extends AbstractGame  {
     private int clearScore;
     private static final String CLEAR_MESSAGE = "CLEAR!";
     private static final String TRY_AGAIN_MESSAGE = "TRY AGAIN\n PRESS SPACE TO RETURN TO LEVEL SELECTION";
+    private static final int ENEMY_MIN_X = 100;
+    private static final int ENEMY_MAX_X = 900;
+    private static final int ENEMY_MIN_Y = 100;
+    private static final int ENEMY_MAX_Y = 500;
+    private static final int ENEMY_CREAT_FRAME = 600;
     private Accuracy accuracy;
     private ArrayList<Lane> lanes;
     private ArrayList<Enemy> enemies;
@@ -47,7 +52,7 @@ public class  ShadowDance extends AbstractGame  {
     private boolean started = false;
     private boolean finished;
     private boolean paused;
-    private int level= -1;
+    private int level= -1; // Use to record the level
 
     public ShadowDance(){
         super(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_TITLE);
@@ -112,7 +117,7 @@ public class  ShadowDance extends AbstractGame  {
                                 SlowDownNote slowDownNote = new SlowDownNote(dir, Integer.parseInt(splitText[2]));
                                 lane.addNote(slowDownNote);
                                 break;
-                            case"SpeedUP":
+                            case"SpeedUp":
                                 SpeedUpNote speedUpNote = new SpeedUpNote(dir, Integer.parseInt(splitText[2]));
                                 lane.addNote(speedUpNote);
                                 break;
@@ -134,6 +139,7 @@ public class  ShadowDance extends AbstractGame  {
         if (input.wasPressed(Keys.ESCAPE)){
             Window.close();
         }
+
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
 
         if (!started) {
@@ -199,32 +205,27 @@ public class  ShadowDance extends AbstractGame  {
                     score += subLane.update(input, accuracy);
                 }
                 if (level == 3){
-                    //在这里把Enemy画出来
-                    for (Enemy subEnemy: enemies){
-                        subEnemy.draw(); // 在这里画的同时，Enemy的draw里面也需要draw
-                    }
                     // 在这里把Guardian画出来
                     guardian.draw();
+
+                    // 处理Enemy
+                    if(currFrame % ENEMY_CREAT_FRAME == 1 && currFrame > ENEMY_CREAT_FRAME){
+                        int enemyX = randomAppear.nextInt(ENEMY_MIN_X + 1 ) + (ENEMY_MAX_X - ENEMY_MIN_X);
+                        int enemyY = randomAppear.nextInt(ENEMY_MIN_Y + 1 ) + (ENEMY_MAX_Y - ENEMY_MIN_Y);
+                        Enemy enemy = new Enemy (enemyX, enemyY);
+                        enemies.add(enemy);
+                    }
+                    //循环每一个Enemy，检查每一个lane和enemy，在lane里面加一个method，用于检查enemy与Lane里面的note的碰撞
+                    for(Enemy subEnemy: enemies){
+                        subEnemy.update();
+                        for(Lane subLane:lanes){
+                            subLane.checkCollision(subEnemy);
+                        }
+                    }
+                    // 处理Guardian
+                    guardian.update(input, enemies);
                 }
 
-                // Enemy处理
-                /** 将Enemy画出来，并且每600帧要出现一次，1，601，1201
-                 * if（currentFrame % 600 = = 1）{
-                 * 生成新的Enemy，
-                 * 并且每生成一个Enemy就要放入到Enemies里面
-                 * //用random随机生成Enemy的坐标
-                 * random.nextInt() -> 100-900为x坐标
-                 * random.nextInt() -> 100-500为y坐标
-                 * }
-                 */
-                /** 此时需要loop Enemies 里面的每一个subEnemy，顺便UpdateEnemy
-                 * 检查每一个lane和subEnemy
-                 * 在lane中用checkCollision检查每一个note
-                 */
-                // Guardian 处理
-                /**
-                 *
-                 */
 
                 // 更新分数，且pop Score
                 accuracy.update();
