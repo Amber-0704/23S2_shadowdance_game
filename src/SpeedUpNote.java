@@ -6,6 +6,7 @@ import bagel.Keys;
 
 public class SpeedUpNote extends Note{
     private final static int Y_START_AXIS = 100;
+    private final static int SPEED_UP = 1;
     private final static  String SPEED_UP_IMAGE = "res/noteSpeedUp.png";
 
     /** The  constructor of Speed Up Note
@@ -29,7 +30,7 @@ public class SpeedUpNote extends Note{
         int score = accuracy.evaluateSpecialScore(getYAxis(), targetHeight, input.wasPressed(relevantKey),
                 Accuracy.SPEED_UP, note);
         if (score != Accuracy.NOT_SCORED) {
-            Note.speedChange = 1;
+            Note.speedChange = SPEED_UP;
             deactivate();
             return score;
         }

@@ -38,8 +38,8 @@ public class Projectile {
 
     /** The method use to draw Projectile
      */
-    public void draw(){
-        PROJECTILE_IMAGE.draw(x, y, options);//用来画projectile的图片，options是图片的朝向
+    public void draw() {
+        PROJECTILE_IMAGE.draw(x, y, options);
     }
 
     /** The method use to get X

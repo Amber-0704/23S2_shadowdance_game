@@ -17,7 +17,7 @@ public class  ShadowDance extends AbstractGame  {
     private int level= -1;
     private final static String CSV_FILE_ONE = "res/level1.csv";
     private final static String CSV_FILE_TWO = "res/level2.csv";
-    private final static String CSV_FILE_THREE = "res/level3.csv";
+    private final static String CSV_FILE_THREE = "res/test3.csv";
     private Track track;
     private static final int CLEAR_SCORE_ONE = 150;
     private static final int CLEAR_SCORE_TWO= 450;
@@ -44,6 +44,7 @@ public class  ShadowDance extends AbstractGame  {
     private final Font TITLE_FONT = new Font(FONT_FILE, 64);
     private final Font INSTRUCTION_FONT = new Font(FONT_FILE, 24);
     private final Font SCORE_FONT = new Font(FONT_FILE, 30);
+    private final String SCORE = "Score ";
     private static final String INSTRUCTIONS = "SELECT LEVELS WITH\n     NUMBER KEYS\n\n         1  2  3";
     private int clearScore;
     private static final String CLEAR_MESSAGE = "CLEAR!";
@@ -124,7 +125,6 @@ public class  ShadowDance extends AbstractGame  {
                     }
                     // Add NormalNote and Hold to this lane
                     if (lane != null) {
-
                         double x = lane.getXAxis();
                         switch (splitText[1]) {
                             case NORMAL_NOTE:
@@ -190,7 +190,7 @@ public class  ShadowDance extends AbstractGame  {
             }
         // While the game is in progress
         } else {
-            SCORE_FONT.drawString("Score " + score, SCORE_LOCATION, SCORE_LOCATION);
+            SCORE_FONT.drawString(SCORE + score, SCORE_LOCATION, SCORE_LOCATION);
             // Game pause
             if (paused) {
                 if (input.wasPressed(Keys.TAB)) {
@@ -211,7 +211,7 @@ public class  ShadowDance extends AbstractGame  {
                     // Draw Guardian
                     guardian.draw();
                     // Create Enemy
-                    createEnemy(currFrame);
+                    createEnemy();
                     // Update enemy, and check if the monster and note collide
                     for(Enemy subEnemy: enemies){
                         subEnemy.update();
@@ -254,9 +254,8 @@ public class  ShadowDance extends AbstractGame  {
     }
 
     /** Method use to create Enemy
-     * @param currFrame The number of frames up to now
      */
-    private void createEnemy(int currFrame){
+    private void createEnemy(){
         if(ShadowDance.currFrame % ENEMY_CREATE_FRAME == 1 && ShadowDance.currFrame > ENEMY_CREATE_FRAME){
             int enemyX = randomAppear.nextInt(ENEMY_MAX_X - ENEMY_MIN_X + 1) + ENEMY_MIN_X;
             int enemyY = randomAppear.nextInt(ENEMY_MAX_Y - ENEMY_MIN_Y + 1) + ENEMY_MIN_Y;

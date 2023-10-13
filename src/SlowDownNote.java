@@ -6,6 +6,7 @@ import bagel.Keys;
  */
 public class SlowDownNote extends Note{
     private final static int Y_START_AXIS = 100;
+    private final static int SPEED_SLOW = -1;
     private final static  String SLOWDOWN_IMAGE= "res/noteSlowDown.png";
 
     /** The  constructor of SlowDown Note
@@ -30,7 +31,7 @@ public class SlowDownNote extends Note{
                 input.wasPressed(relevantKey), Accuracy.SLOW_DOWN, note);
         if (score != Accuracy.NOT_SCORED) {
             // touched, then Change the Speed
-            Note.speedChange = -1;
+            Note.speedChange = SPEED_SLOW;
             deactivate();
             return score;
         }

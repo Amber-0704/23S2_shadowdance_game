@@ -14,7 +14,6 @@ public class BombNote extends Note{
      */
     public BombNote(String dir, int appearanceFrame, double x){
         super(appearanceFrame, new Image("res/noteBomb.png"), x, Y_START_AXIS);
-
     }
 
     /** Method use to check score
