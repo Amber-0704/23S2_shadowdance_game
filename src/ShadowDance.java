@@ -17,7 +17,7 @@ public class  ShadowDance extends AbstractGame  {
     private int level= -1;
     private final static String CSV_FILE_ONE = "res/level1.csv";
     private final static String CSV_FILE_TWO = "res/level2.csv";
-    private final static String CSV_FILE_THREE = "res/test3.csv";
+    private final static String CSV_FILE_THREE = "res/level3.csv";
     private Track track;
     private static final int CLEAR_SCORE_ONE = 150;
     private static final int CLEAR_SCORE_TWO= 450;
